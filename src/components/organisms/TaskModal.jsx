@@ -1,58 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { updateTaskApi, createTaskApi, deleteTaskApi } from '../../api/taskApi.js';
+import { updateTaskApi, createTaskApi } from '../../api/taskApi.js';
 import LoadingSpinner from "../molecules/LoadingSpinner.jsx";
-import Button from "../atoms/Button.jsx"; // Import các hàm API
-
-// Props:
-// show: Boolean - Quyết định có hiển thị modal hay không
-// isEdit: Boolean - Quyết định chế độ (true = Edit, false = Create)
-// initialTask: Object - Task object hiện tại (chỉ có trong chế độ Edit)
-// onSave: Function - Callback sau khi tạo/cập nhật thành công
-// onDelete: Function - Callback sau khi xóa thành công
-// onClose: Function - Đóng modal
+import Button from "../atoms/Button.jsx";
 
 export default function TaskModal({ show, isEdit, initialTask, onSave, onDelete, onClose }) {
-    // Bỏ if (!show) return null; ở đây. Hãy để logic hiển thị/ẩn ở phần return
-    // (Vì chúng ta đã dùng key để quản lý việc mount/unmount rồi)
+    if (!show) return null;
 
-    // Khởi tạo state bằng hàm khởi tạo, chỉ chạy 1 lần khi component mount
-    // const initialFormState = () => {
-    //     if (isEdit && initialTask) {
-    //         const formattedDate = initialTask.dueDate ? new Date(initialTask.dueDate).toISOString().split('T')[0] : '';
-    //         return {
-    //             title: initialTask.title || '',
-    //             description: initialTask.description || '',
-    //             status: initialTask.status || 'todo',
-    //             dueDate: formattedDate,
-    //         };
-    //     }
-    //     // Chế độ Create
-    //     return { title: '', description: '', status: 'todo', dueDate: '' };
-    // };
-    //
-    // const [formData, setFormData] = useState(initialFormState); // Gọi hàm khởi tạo
-    //
-    // const [isLoading, setIsLoading] = useState(false);
-    if (!show) return null; // Nếu gọi modal mà show là false thì trả về null
-
-    // 1. Dùng state để quản lý dữ liệu form
-    // Khởi tạo giá trị mặc định
-    // State này đồng thời dùng để quản lý data của form
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        status: 'todo', // Giá trị mặc định
+        status: 'todo',
         dueDate: '',
     });
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // 2. Dùng useEffect để điền dữ liệu vào form khi ở chế độ Edit
     useEffect(() => {
-        if (isEdit && initialTask) { // Nếu isEdit là true, và initialTask không phải null
-            // Định dạng lại ngày tháng nếu cần thiết cho input type="date"
+        if (isEdit && initialTask) {
             const formattedDate = initialTask.dueDate ? new Date(initialTask.dueDate).toISOString().split('T')[0] : '';
-            // Lấy data mới từ initialTask, nếu không có thì đặt là mặc định?
             setFormData({
                 title: initialTask.title || '',
                 description: initialTask.description || '',
@@ -60,24 +25,17 @@ export default function TaskModal({ show, isEdit, initialTask, onSave, onDelete,
                 dueDate: formattedDate,
             });
         } else if (!isEdit) {
-            // Reset form khi chuyển sang chế độ Create
-            // Khi form ở chế độ create thì sẽ đặt mặc định
             setFormData({ title: '', description: '', status: 'todo', dueDate: '' });
         }
-    }, [isEdit, initialTask]) // Mảng Dependencies của useEffect
-    // Nó đãm bảo cho hook này chỉ thay đổi khi 1 trong 2 thằng này có sự thay đổi thôi
+    }, [isEdit, initialTask])
 
-    // Hàm xử lý thay đổi input
-    // Hàm này được gọi mỗi khi 1 field trong from thay đổi
-    // khi thay đổi thì form sẽ thay đổi theo, phải có thằng này vì React sử dụng dom ảo đúng không?
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // 3. Hàm xử lý gửi form (Update hoặc Create)
     const handleSubmit = async (e) => {
-        e.preventDefault(); // ngăn vụ reload trang khi submit form
+        e.preventDefault();
         setIsLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -88,9 +46,8 @@ export default function TaskModal({ show, isEdit, initialTask, onSave, onDelete,
             } else {
                 result = await createTaskApi(formData);
             }
-            // Gọi callback để cập nhật danh sách ở component cha
             onSave(result);
-            onClose(); // Đóng modal
+            onClose();
         } catch (error) {
             console.error("Lỗi khi lưu công việc:", error);
             alert(`Lỗi khi ${isEdit ? 'cập nhật' : 'tạo mới'} công việc.`);
@@ -99,40 +56,65 @@ export default function TaskModal({ show, isEdit, initialTask, onSave, onDelete,
         }
     };
 
-    // if (!show) return null;
-
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black/50">
-            <div className="bg-gradient-to-br from-green-900/40 to-green-950/40 rounded-lg w-full max-w-md p-6 relative shadow-2xl border border-green-500/30 backdrop-blur-md">
-                <h2 className="text-xl font-bold mb-4 text-green-300">
+        <div className="fixed inset-0 flex items-center justify-center z-50
+             /* Áp dụng backdrop-blur và nền bán trong suốt cùng lúc */
+             backdrop-blur-sm bg-[rgb(var(--overlay-bg-rgb)/10)]">
+            <div className="
+                /* Nền Modal (Background chính của Modal/Spinner) */
+                bg-gradient-to-br from-[rgb(var(--bg-primary-to)/40)] to-[rgb(var(--bg-primary-from)/40)]
+                rounded-lg w-full max-w-md p-6 relative shadow-2xl
+                border border-[rgb(var(--accent-base)/30)] backdrop-blur-md">
+
+                {/* Tiêu đề */}
+                <h2 className="text-xl font-bold mb-4
+                    text-[rgb(var(--accent-text))]">
                     {isEdit ? "Edit Task" : "Create Task"}
                 </h2>
 
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    {/* Input Title */}
                     <input
-                        name="title" // Thêm name
+                        name="title"
                         placeholder="Task title"
-                        className="bg-green-900/30 border border-green-500/30 rounded-md px-4 py-2 text-green-100 placeholder-green-400/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
-                        value={formData.title} // Liên kết với state
-                        onChange={handleChange} // Xử lý thay đổi
+                        className="
+                            /* Input Styling */
+                            bg-[rgb(var(--bg-primary-to)/30)] border border-[rgb(var(--accent-base)/30)] rounded-md px-4 py-2
+                            text-[rgb(var(--text-base))] placeholder-[rgb(var(--text-base)/50)] focus:outline-none
+                            focus:ring-2 focus:ring-[rgb(var(--accent-base)/50)] focus:border-[rgb(var(--accent-base)/50)]
+                            transition-all"
+                        value={formData.title}
+                        onChange={handleChange}
                         required
                     />
 
+                    {/* Textarea Description */}
                     <textarea
-                        name="description" // Thêm name
+                        name="description"
                         placeholder="Description"
-                        className="bg-green-900/30 border border-green-500/30 rounded-md px-4 py-2 text-green-100 placeholder-green-400/50 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all resize-none"
-                        value={formData.description} // Liên kết với state
+                        className="
+                            /* Textarea Styling */
+                            bg-[rgb(var(--bg-primary-to)/30)] border border-[rgb(var(--accent-base)/30)] rounded-md px-4 py-2
+                            text-[rgb(var(--text-base))] placeholder-[rgb(var(--text-base)/50)] focus:outline-none
+                            focus:ring-2 focus:ring-[rgb(var(--accent-base)/50)] focus:border-[rgb(var(--accent-base)/50)]
+                            transition-all resize-none"
+                        value={formData.description}
                         onChange={handleChange}
                         rows="3"
                     ></textarea>
+
+                    {/* Status Select (chỉ Edit) */}
                     {isEdit && (
                         <div className="flex justify-between items-center gap-2">
-                            <label className="text-green-300">Status:</label>
+                            <label className="text-[rgb(var(--accent-text))]">Status:</label>
                             <select
-                                name="status" // Thêm name
-                                className="bg-green-900/30 border border-green-500/30 rounded-md px-3 py-2 text-green-100 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
-                                value={formData.status} // Liên kết với state
+                                name="status"
+                                className="
+                                    /* Select Styling */
+                                    bg-[rgb(var(--bg-primary-to)/30)] border border-[rgb(var(--accent-base)/30)] rounded-md px-3 py-2
+                                    text-[rgb(var(--text-base))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--accent-base)/50)] focus:border-[rgb(var(--accent-base)/50)]
+                                    transition-all"
+                                value={formData.status}
                                 onChange={handleChange}
                             >
                                 <option value="todo">To Do</option>
@@ -142,42 +124,58 @@ export default function TaskModal({ show, isEdit, initialTask, onSave, onDelete,
                         </div>
                     )}
 
+                    {/* Due Date Input */}
                     <div className="flex justify-between items-center gap-2">
-                        <label className="text-green-300">Due Date:</label>
+                        <label className="text-[rgb(var(--accent-text))]">Due Date:</label>
                         <input
-                            name="dueDate" // Thêm name
+                            name="dueDate"
                             type="date"
-                            className="bg-green-900/30 border border-green-500/30 rounded-md px-3 py-2 text-green-100 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
-                            value={formData.dueDate} // Liên kết với state
+                            className="
+                                /* Date Input Styling */
+                                bg-[rgb(var(--bg-primary-to)/30)] border border-[rgb(var(--accent-base)/30)] rounded-md px-3 py-2
+                                text-[rgb(var(--text-base))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--accent-base)/50)] focus:border-[rgb(var(--accent-base)/50)]
+                                transition-all"
+                            value={formData.dueDate}
                             onChange={handleChange}
                         />
                     </div>
 
+                    {/* Buttons */}
                     <div className="flex justify-end gap-2 mt-4">
+                        {/* Cancel Button */}
                         <Button
                             type="button"
-                            className="bg-green-500/20 hover:bg-green-500/30 text-green-300 hover:text-green-200 border border-green-500/30 px-4 py-2 rounded-md transition-all duration-200 disabled:opacity-50"
+                            className="
+                                /* Cancel Button Styling */
+                                bg-[rgb(var(--accent-base)/20)] hover:bg-[rgb(var(--accent-base)/30)]
+                                text-[rgb(var(--accent-text))] hover:text-[rgb(var(--accent-text-light))]
+                                border border-[rgb(var(--accent-base)/30)] px-4 py-2 rounded-md transition-all duration-200 disabled:opacity-50"
                             onClick={onClose}
                             disabled={isLoading}
                             text="Cancel"
                         />
 
+                        {/* Save/Update Button */}
                         <Button
                             type="submit"
-                            className="bg-green-500/30 hover:bg-green-500/40 text-green-200 hover:text-green-100 border border-green-500/50 px-4 py-2 rounded-md transition-all duration-200 disabled:opacity-50 font-medium"
-                            disabled={isLoading} // Tắt nút khi đang tải
+                            className="
+                                /* Submit Button Styling */
+                                bg-[rgb(var(--accent-base)/30)] hover:bg-[rgb(var(--accent-base)/40)]
+                                text-[rgb(var(--accent-text-light))] hover:text-[rgb(var(--accent-text))]
+                                border border-[rgb(var(--accent-base)/50)] px-4 py-2 rounded-md transition-all duration-200 disabled:opacity-50 font-medium"
+                            disabled={isLoading}
                             text={isEdit ? "Update" : "Add Task"}
                         />
                     </div>
                 </form>
 
+                {/* Close Button (X) */}
                 <Button
                     onClick={onClose}
-                    className="absolute top-3 right-3 text-green-400/60 hover:text-green-300 font-bold text-xl transition-colors disabled:opacity-50"
+                    className="absolute top-3 right-3 text-[rgb(var(--accent-text-light)/60)] hover:text-[rgb(var(--accent-text))] font-bold text-xl transition-colors disabled:opacity-50"
                     disabled={isLoading}
                     text="X"
-                >
-                </Button>
+                />
             </div>
             {isLoading ? <LoadingSpinner/> : null}
         </div>
