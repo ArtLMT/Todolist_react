@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {Footer, Header} from "../components/index.js";
-import TaskBoard from "../pages/TaskBoard.jsx";
-import TaskModal from "../components/organisms/TaskModal.jsx";
-import {deleteTaskApi, fetchTasksApi} from '../api/taskApi';
+import WordBoard from "../pages/WordBoard.jsx";
+import WordModal from "../components/organisms/WordModal.jsx";
+import {deleteWordApi, fetchWordsApi} from '../api/wordApi.js';
 import Button from "../components/atoms/Button.jsx";
-import { useTaskModal } from "../hooks/useTaskModal.js";
+import { useWordModal } from "../hooks/useWordModal.js";
 import Sidebar from "../components/molecules/Sidebar.jsx";
 import ConfirmDeleteModal from '../components/organisms/ConfirmDeleteModal.jsx';
 import LoadingSpinner from "../components/molecules/LoadingSpinner.jsx";
@@ -36,27 +36,27 @@ export default function Layout() {
     // --- END: THEME LOGIC ---
 
 
-    const [tasks, setTasks] = useState([]);
+    const [words, setWords] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const modal = useTaskModal();
+    const modal = useWordModal();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [deleteTask, setDeleteTask] = useState(null);
+    const [deleteWord, setDeleteWord] = useState(null);
 
-    // ... (Các hàm handleDeleteClick, handleDeleteConfirm, handleDeleteCancel, fetchTasksApi logic)
+    // ... (Các hàm handleDeleteClick, handleDeleteConfirm, handleDeleteCancel, fetchWordsApi logic)
 
-    const handleDeleteClick = (task) => {
+    const handleDeleteClick = (word) => {
         setShowDeleteConfirm(true);
-        setDeleteTask(task);
+        setDeleteWord(word);
     };
 
     const handleDeleteConfirm = async () => {
         setIsLoading(true);
         try {
-            const deletedId = await deleteTaskApi(deleteTask._id);
+            const deletedId = await deleteWordApi(deleteWord._id);
             await new Promise((resolve) => setTimeout(resolve, 500));
             modal.closeModal();
             setShowDeleteConfirm(false);
-            handleTaskDeleted(deletedId);
+            handleWordDeleted(deletedId);
         } catch (error) {
             console.error("Lỗi khi xóa công việc:", error);
             alert("Lỗi khi xóa công việc.");
@@ -69,7 +69,6 @@ export default function Layout() {
         setShowDeleteConfirm(false);
     };
 
-    // Fetch dữ liệu tasks khi component mount
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -77,48 +76,56 @@ export default function Layout() {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await fetchTasksApi();
+                const response = await fetchWordsApi();
                 await new Promise((resolve) => setTimeout(resolve, 500));
-                setTasks(response);
+                setWords(response);
             } catch (err) {
-                console.error("Lỗi khi tải tasks:", err);
-                setError("Không thể tải dữ liệu. Vui lòng thử lại.");
+                console.error("Error when fetching data:", err);
+                setError("Error when fetching data.");
             } finally {
                 setIsLoading(false);
             }
         };
         fetchData();
+        console.log()
     }, []);
 
-    // Xử lý CREATE/UPDATE task
-    const handleTaskSaved = (savedTask) => {
-        setTasks((prevTasks) =>
+    // Xử lý CREATE/UPDATE word
+    const handleWordSaved = (savedWord) => {
+        setWords((prevWords) =>
             modal.isEditMode
-                ? prevTasks.map((t) => (t._id === savedTask._id ? savedTask : t))
-                : [...prevTasks, savedTask]
+                ? prevWords.map((t) => (t._id === savedWord._id ? savedWord : t))
+                : [...prevWords, savedWord]
         );
         modal.closeModal();
     };
 
-    // Xử lý DELETE task
-    const handleTaskDeleted = (deletedId) => {
-        setTasks((prevTasks) => prevTasks.filter((t) => t._id !== deletedId));
+    // Xử lý DELETE word
+    const handleWordDeleted = (deletedId) => {
+        setWords((prevWords) => prevWords.filter((t) => t._id !== deletedId));
         modal.closeModal();
     };
-
 
     return (
         <div className="h-screen min-h-screen min-w-screen flex flex-col
                     bg-gradient-to-br from-[rgb(var(--bg-primary-from))] to-[rgb(var(--bg-primary-to))]
+                            transition-all duration-300
+
         ">
-            {/* Truyền theme state và toggleTheme xuống Header hoặc Sidebar */}
-            <Header theme={theme} toggleTheme={toggleTheme} />
+            <Header
+                theme={theme}
+                toggleTheme={toggleTheme}
+                openCreateModal={modal.openCreateModal}
+
+            />
 
             <div className="flex flex-1 min-h-0">
-                <Sidebar theme={theme} toggleTheme={toggleTheme} />
-                <TaskBoard
-                    className="flex-1 min-h-0"
-                    tasks={tasks}
+                {/*<Sidebar*/}
+                {/*    openCreateModal={modal.openCreateModal}*/}
+                {/*/>*/}
+                <WordBoard
+                    className="flex-1 min-h-0 transition-all"
+                    words={words}
                     onEditRequested={modal.openEditModal}
                     onDeleteRequest={handleDeleteClick}
                 />
@@ -126,19 +133,19 @@ export default function Layout() {
             </div>
             <Footer className="shrink-0" />
 
-            <TaskModal
-                key={modal.isOpen ? modal.selectedTask?._id || 'create' : 'closed'}
+            <WordModal
+                key={modal.isOpen ? modal.selectedWord?._id || 'create' : 'closed'}
                 show={modal.isOpen}
                 isEdit={modal.isEditMode}
-                initialTask={modal.selectedTask}
-                onSave={handleTaskSaved}
-                onDelete={handleTaskDeleted}
+                selectedWord={modal.selectedWord}
+                onSave={handleWordSaved}
+                onDelete={handleWordDeleted}
                 onClose={modal.closeModal}
             />
 
             <ConfirmDeleteModal
                 show={showDeleteConfirm}
-                taskTitle={ deleteTask?.title }
+                wordTitle={ deleteWord?.title }
                 onConfirm={handleDeleteConfirm}
                 onCancel={handleDeleteCancel}
                 isLoading={isLoading}

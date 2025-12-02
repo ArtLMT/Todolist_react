@@ -1,79 +1,57 @@
 @import "tailwindcss";
 
 .custom-scrollbar {
-    /* Thay thế giá trị cố định bằng biến CSS */
     scrollbar-color: rgb(var(--accent-text)) rgba(var(--accent-base) / 0.2);
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    /* Thay thế giá trị cố định bằng biến CSS */
     background: rgba(var(--accent-base) / 0.1);
     border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    /* Sử dụng biến cho màu gradient */
     background: linear-gradient(180deg,
-    rgb(var(--accent-text)), /* Tương đương Green-300/Cyan-700 */
-    rgb(var(--accent-base))); /* Tương đương Green-500/Cyan-500 */
+    rgb(var(--accent-text)),
+    rgb(var(--accent-base)));
     border-radius: 10px;
-    /* Sử dụng biến cho màu shadow */
     box-shadow: 0 0 8px rgba(var(--accent-text) / 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    /* Sử dụng biến cho màu gradient hover */
     background: linear-gradient(180deg,
     rgb(var(--accent-text-light)),
     rgb(var(--accent-base)));
     box-shadow: 0 0 12px rgba(var(--accent-text) / 0.5);
 }
 
-/* 1. LIGHT MODE (Mặc định) */
 :root {
-    /* Nền (Primary White/Off-White) */
-    --bg-primary-from: 255 255 255;  /* White */
-    --bg-primary-to: 249 250 251;    /* Gray-50 */
-    --bg-card-from: 243 244 246;     /* Gray-100 */
+    --bg-primary-from: 250 252 255;
+    --bg-primary-to: 242 246 250;
 
-    /* Màu Accent (Blue/Cyan - Sanh) */
-    --accent-base: 6 182 212;        /* Cyan-500 */
-    --accent-text: 6 182 212;        /* Green-700 (giữ màu xanh lá đậm) */
-    /*--accent-text: 45 212 191;*/
-    --accent-text-light: 45 212 191; /* Cyan-400 */
+    --bg-card-from: 255 255 255;
 
-    /* Màu trạng thái trang trí */
-    --color-status-red: 239 68 68;   /* Red-500 */
-    --color-status-yellow: 245 158 11; /* Yellow-600 */
+    --accent-base: 37 99 235;
+    --accent-text: 30 64 175;
+    --accent-text-light: 147 197 253;
 
-    /* Màu chữ chung */
-    --text-base: 31 41 55;           /* Gray-800 */
+    --text-base: 30 41 59;
 
-    /* Màu Loading Overlay */
-    --overlay-bg: 6 182 212;             /* Black */
-    --bg-primary-board: 250 250 250;
+    --overlay-bg: 255 255 255;
+    --bg-primary-board: 248 250 252;
 }
 
-/* 2. DARK MODE */
+
 .dark {
-    /* Nền */
-    --bg-primary-from: 24 24 27;     /* Zinc-900 (Gần Green-950) */
-    --bg-primary-to: 39 39 42;       /* Zinc-800 (Gần Green-900) */
+    --bg-primary-from: 24 24 27;
+    --bg-primary-to: 39 39 42;
     --bg-card-from: 39 39 42;
 
-    /* Màu Accent (Giữ nguyên Green-500/300) */
-    --accent-base: 34 197 94;        /* Green-500 */
-    --accent-text: 134 239 172;      /* Green-300 */
-    --accent-text-light: 52 211 153; /* Green-400 */
+    --accent-base: 34 197 94;
+    --accent-text: 134 239 172;
+    --accent-text-light: 52 211 153;
 
-    /* Màu trạng thái trang trí */
-    --color-status-red: 239 68 68;
-    --color-status-yellow: 245 158 11;
+    --text-base: 229 231 235;
 
-    /* Màu chữ chung */
-    --text-base: 229 231 235;        /* Gray-200 */
-
-    /* Màu Loading Overlay */
-    --overlay-bg: 24 24 24;          /* #181818 */
+    --overlay-bg: 24 24 24;
     --bg-primary-board: 24 24 24;
 }

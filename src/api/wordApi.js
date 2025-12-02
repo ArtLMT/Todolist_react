@@ -7,29 +7,29 @@ const api = axios.create({
 
 const USER_ID = "6901ac6ca70b742843a840a6";
 
-export const fetchTasksApi = async () => {
-    // Tương đương với actions.fetchTasks
-    const res = await api.get('/tasks');
+export const fetchWordsApi = async () => {
+    // Tương đương với actions.fetchWords
+    const res = await api.get('/words');
     return res.data;
 };
 
-export const createTaskApi = async (data) => {
+export const createWordApi = async (data) => {
     // Tương đương với actions.create
     const payload = { ...data, user_id: USER_ID };
-    const res = await api.post('/tasks', payload);
+    const res = await api.post('/words', payload);
     return res.data;
 };
 
-export const updateTaskApi = async (id, data) => {
+export const updateWordApi = async (id, data) => {
     // Tương đương với actions.update
     const payload = { ...data, user_id: USER_ID };
-    const res = await api.put(`/tasks/${id}`, payload);
-    // Lưu ý: Tùy thuộc vào API của bạn, bạn cần lấy updatedTask từ res.data.data hoặc res.data
+    const res = await api.put(`/words/${id}`, payload);
+    // Lưu ý: Tùy thuộc vào API của bạn, bạn cần lấy updatedWord từ res.data.data hoặc res.data
     return res.data.data;
 };
 
-export const deleteTaskApi = async (id) => {
+export const deleteWordApi = async (id) => {
     // Tương đương với actions.delete
-    await api.delete(`/tasks/${id}`);
+    await api.delete(`/words/${id}`);
     return id; // Trả về id đã xóa
 };

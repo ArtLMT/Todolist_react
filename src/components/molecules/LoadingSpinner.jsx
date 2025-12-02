@@ -8,7 +8,7 @@ export default function LoadingSpinner() {
                     <div className="absolute inset-0 rounded-full border-4 border-[rgb(var(--accent-base)/70)]"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[rgb(var(--accent-base))] border-r-[rgb(var(--accent-base)/50)] animate-spin"></div>
                 </div>
-                <p className="text-[rgb(var(--accent-text))] font-medium">Task Board is loading...</p>
+                <p className="text-[rgb(var(--accent-text))] font-medium">Vocabulary Vault is loading...</p>
             </div>
         </div>
     );

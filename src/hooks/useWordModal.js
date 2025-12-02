@@ -1,26 +1,26 @@
 import { useState } from "react";
 
-export function useTaskModal() {
+export function useWordModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [selectedTask, setSelectedTask] = useState(null);
+    const [selectedWord, setSelectedWord] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const openCreateModal = () => {
         setIsEditMode(false);
-        setSelectedTask(null);
+        setSelectedWord(null);
         setIsOpen(true);
     };
 
-    const openEditModal = (task) => {
-        setSelectedTask(task);
+    const openEditModal = (word) => {
+        setSelectedWord(word);
         setIsEditMode(true);
         setIsOpen(true);
     };
 
     const closeModal = () => {
         setIsOpen(false);
-        setSelectedTask(null);
+        setSelectedWord(null);
         setIsEditMode(false);
     };
 
@@ -40,7 +40,7 @@ export function useTaskModal() {
     return {
         isOpen,
         isEditMode,
-        selectedTask,
+        selectedWord,
         showDeleteConfirm,
         openCreateModal,
         openEditModal,
