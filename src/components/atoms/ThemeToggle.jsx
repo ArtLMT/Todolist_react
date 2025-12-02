@@ -1,8 +1,5 @@
-// src/components/atoms/ThemeToggle.jsx (hoặc đặt ở bất kỳ đâu bạn muốn)
-
 import React from 'react';
 
-// Sử dụng các biến CSS đã định nghĩa: --accent-base, --accent-text
 const ThemeToggle = ({ theme, toggleTheme }) => {
     return (
         <button

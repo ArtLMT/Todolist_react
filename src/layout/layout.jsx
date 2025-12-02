@@ -9,11 +9,8 @@ import Sidebar from "../components/molecules/Sidebar.jsx";
 import ConfirmDeleteModal from '../components/organisms/ConfirmDeleteModal.jsx';
 import LoadingSpinner from "../components/molecules/LoadingSpinner.jsx";
 
-
 export default function Layout() {
-    // --- START: THEME LOGIC ---
     const [theme, setTheme] = useState(
-        // Khởi tạo theme từ Local Storage, mặc định là 'dark'
         () => localStorage.getItem('theme') || 'dark'
     );
 
@@ -21,19 +18,14 @@ export default function Layout() {
         setTheme(currentTheme => (currentTheme === 'light' ? 'dark' : 'light'));
     };
 
-    // useEffect để đồng bộ theme state với DOM và Local Storage
     useEffect(() => {
         const root = window.document.documentElement; // Thẻ <html>
 
-        // 1. Loại bỏ class theme cũ và thêm class theme mới
-        // Nếu theme là 'dark', loại bỏ 'light' và thêm 'dark'
         root.classList.remove(theme === 'dark' ? 'light' : 'dark');
         root.classList.add(theme);
 
-        // 2. Lưu trạng thái vào Local Storage
         localStorage.setItem('theme', theme);
-    }, [theme]); // Chạy lại mỗi khi 'theme' thay đổi
-    // --- END: THEME LOGIC ---
+    }, [theme]);
 
 
     const [words, setWords] = useState([]);
@@ -41,8 +33,6 @@ export default function Layout() {
     const modal = useWordModal();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteWord, setDeleteWord] = useState(null);
-
-    // ... (Các hàm handleDeleteClick, handleDeleteConfirm, handleDeleteCancel, fetchWordsApi logic)
 
     const handleDeleteClick = (word) => {
         setShowDeleteConfirm(true);
@@ -58,8 +48,8 @@ export default function Layout() {
             setShowDeleteConfirm(false);
             handleWordDeleted(deletedId);
         } catch (error) {
-            console.error("Lỗi khi xóa công việc:", error);
-            alert("Lỗi khi xóa công việc.");
+            console.error("An error happened", error);
+            alert("An error happened");
         } finally {
             setIsLoading(false);
         }
@@ -90,7 +80,6 @@ export default function Layout() {
         console.log()
     }, []);
 
-    // Xử lý CREATE/UPDATE word
     const handleWordSaved = (savedWord) => {
         setWords((prevWords) =>
             modal.isEditMode
@@ -100,7 +89,6 @@ export default function Layout() {
         modal.closeModal();
     };
 
-    // Xử lý DELETE word
     const handleWordDeleted = (deletedId) => {
         setWords((prevWords) => prevWords.filter((t) => t._id !== deletedId));
         modal.closeModal();
@@ -145,7 +133,9 @@ export default function Layout() {
 
             <ConfirmDeleteModal
                 show={showDeleteConfirm}
-                wordTitle={ deleteWord?.title }
+                wordTitle={
+                    deleteWord?.translations?.[0]?.value
+                }
                 onConfirm={handleDeleteConfirm}
                 onCancel={handleDeleteCancel}
                 isLoading={isLoading}

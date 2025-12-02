@@ -7,12 +7,6 @@ export default function Sidebar( { theme, toggleTheme, openCreateModal } ) {
 
     return (
         <>
-            {/*<aside className={`*/}
-            {/*    bg-gradient-to-br from-[rgb(var(--bg-primary-from)/20)] to-[rgb(var(--bg-primary-to)/10)] */}
-            {/*    border-r border-[rgb(var(--accent-base)/20)] */}
-            {/*    transition-all duration-300 z-40 ${*/}
-            {/*    isOpen ? 'w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'*/}
-            {/*}`}>*/}
             <aside className="
                 bg-gradient-to-br from-[rgb(var(--bg-primary-from)/20)]
                 to-[rgb(var(--bg-primary-to)/10)]

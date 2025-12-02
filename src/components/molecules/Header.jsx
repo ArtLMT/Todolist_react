@@ -1,19 +1,12 @@
-// src/components/Header.jsx (hoặc tương tự)
-
 import ThemeToggle from "../atoms/ThemeToggle.jsx";
 import Button from "../atoms/Button.jsx";
 import {useWordModal} from "../../hooks/useWordModal.js"; // Đảm bảo đúng đường dẫn
 
-// Nhận theme và toggleTheme làm props từ Layout
 export default function Header({ theme, toggleTheme, openCreateModal }) {
     return (
         <header className="
-            /* Thay thế nền gradient */
             bg-gradient-to-br from-[rgb(var(--bg-primary-from)/20)] to-[rgb(var(--bg-primary-to)/10)]
-
-            /* Thay thế viền */
             border-b border-[rgb(var(--accent-base)/20)]
-
             backdrop-blur-md sticky top-0 z-40"
         >
             <div className="px-6 py-4 flex items-center justify-between">

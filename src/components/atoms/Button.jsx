@@ -6,7 +6,7 @@ export default function Button({
 
     return (
         <button
-            onClick={onClick} // onClick={handleClick}
+            onClick={onClick}
             className={`px-3 py-1 rounded ${className}`}
         >
             {text}

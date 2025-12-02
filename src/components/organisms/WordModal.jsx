@@ -19,8 +19,6 @@ export default function WordModal({ show, isEdit, selectedWord, onSave, onDelete
         if (isEdit && selectedWord) {
             setFormData({
                 description: selectedWord.description || "",
-                // Keep _id when present so frontend can show or send it if needed.
-                // When creating new translations they simply won't have _id.
                 translations: Array.isArray(selectedWord.translations) && selectedWord.translations.length > 0
                     ? selectedWord.translations.map(t => ({ lang: t.lang || "", value: t.value || "", _id: t._id }))
                     : [emptyTranslation()]
@@ -51,7 +49,6 @@ export default function WordModal({ show, isEdit, selectedWord, onSave, onDelete
     };
 
     const validate = () => {
-        // simple validation: every translation must have lang and value (non-empty)
         for (const t of formData.translations) {
             if (!t.lang || !t.value) return false;
         }
@@ -94,7 +91,7 @@ export default function WordModal({ show, isEdit, selectedWord, onSave, onDelete
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm
             bg-[rgb(var(--overlay-bg-rgb)/10)] text-[rgb(var(--text-base)/60)]
-            ">
+        ">
 
             <div className="relative bg-gradient-to-br from-[rgb(var(--bg-primary-to)/40)] to-[rgb(var(--bg-primary-from)/40)] rounded-lg w-full max-w-lg p-6 shadow-2xl border border-[rgb(var(--accent-base)/30)]">
                 <h2 className="text-xl font-bold mb-4 text-[rgb(var(--accent-text))]">
@@ -129,55 +126,60 @@ export default function WordModal({ show, isEdit, selectedWord, onSave, onDelete
                                     <input
                                         value={t.value}
                                         onChange={(e) => updateTranslation(idx, "value", e.target.value)}
-                                        placeholder="translation value"
+                                        placeholder="Word"
                                         className="flex-1 bg-[rgb(var(--bg-primary-to)/30)] border border-[rgb(var(--accent-base)/30)] rounded-md px-2 py-1"
                                     />
 
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={() => removeTranslation(idx)}
                                         className="px-2 py-1 rounded-md text-sm bg-[rgb(var(--color-status-red)/10)] hover:bg-[rgb(var(--color-status-red)/20)]"
+                                        text="✕"
                                         title="Remove"
-                                    >
-                                        ✕
-                                    </button>
+                                    />
                                 </div>
                             ))}
                         </div>
 
                         <div>
-                            <button
+                            <Button
                                 type="button"
                                 onClick={addTranslation}
-                                className="mt-2 inline-block text-sm px-3 py-1 rounded-md bg-[rgb(var(--accent-base)/20)] hover:bg-[rgb(var(--accent-base)/30)]"
-                            >
-                                + Add language
-                            </button>
+                                className="mt-2 inline-block text-sm px-3 py-1 rounded-md bg-[rgb(var(--accent-base)/20)] hover:bg-[rgb(var(--accent-base)/30)] text-white"
+                                text="+ Add language"
+                            />
                         </div>
                     </div>
 
                     <div className="flex justify-end gap-2 mt-4">
-                        {isEdit && (
-                            <Button
-                                type="button"
-                                onClick={() => onDelete?.(selectedWord)}
-                                className="bg-[rgb(var(--color-status-red)/10)]"
-                                text="Delete"
-                            />
-                        )}
+                        {isEdit}
 
-                        <Button type="button" onClick={onClose} text="Cancel" />
-                        <Button type="submit" text={isEdit ? "Update" : "Create"} disabled={isLoading} />
+                        <Button
+                            type="button"
+                            onClick={onClose}
+                            className="bg-red-500 hover:bg-red-500/40 text-white hover:text-red-100 border border-red-500/50
+                            px-4 py-2 rounded-md
+                            transition-all duration-200 disabled:opacity-50 font-medium"
+                            text="Cancel"
+
+                        />
+                        <Button
+                            type="submit"
+                            text={isEdit ? "Update" : "Create"}
+                            className="bg-green-500 hover:bg-green-500/30 text-white font-medium hover:text-green-200 border border-green-500/30
+                            px-4 py-2 rounded-md
+                            transition-all duration-200 disabled:opacity-50"
+                            disabled={isLoading}
+                        />
                     </div>
                 </form>
 
-                <button
+                <Button
                     onClick={onClose}
                     className="absolute top-3 right-3 text-[rgb(var(--accent-text-light)/60)] hover:text-[rgb(var(--accent-text))] font-bold text-lg"
+                    text="✕"
                     disabled={isLoading}
-                >
-                    ✕
-                </button>
+                />
             </div>
 
             {isLoading && (
