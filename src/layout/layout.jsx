@@ -84,7 +84,7 @@ export default function Layout() {
         setWords((prevWords) =>
             modal.isEditMode
                 ? prevWords.map((t) => (t._id === savedWord._id ? savedWord : t))
-                : [...prevWords, savedWord]
+                : [savedWord, ...prevWords]
         );
         modal.closeModal();
     };

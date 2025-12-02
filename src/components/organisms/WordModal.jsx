@@ -143,8 +143,8 @@ export default function WordModal({ show, isEdit, selectedWord, onSave, onDelete
 
                         <div>
                             <Button
-                                type="button"
                                 onClick={addTranslation}
+                                type="button"
                                 className="mt-2 inline-block text-sm px-3 py-1 rounded-md bg-[rgb(var(--accent-base)/20)] hover:bg-[rgb(var(--accent-base)/30)] text-white"
                                 text="+ Add language"
                             />

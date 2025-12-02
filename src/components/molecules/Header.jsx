@@ -33,7 +33,7 @@ export default function Header({ theme, toggleTheme, openCreateModal }) {
 
                     <Button
                         onClick={openCreateModal}
-                        text={"Create Task"}
+                        text={"+ Add Word"}
                         className="flex items-center justify-center gap-2 h-10 px-4 rounded-lg font-semibold
                             bg-[rgb(var(--accent-base)/35)] border border-[rgb(var(--accent-base)/50)] shadow-[0_2px_6px_rgba(0,0,0,0.15)] text-white
                             transition-all duration-200
